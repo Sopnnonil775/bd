@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bdcast web tv 1</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --primary: #e67e22;
+  --primary-dark: #cf711f;
+  --bg-light: #fff8e1; /* হলুদ রঙে পরিবর্তন */
+  --text-dark: #333;
+  --btn-bg: #f5c27a;
+  --btn-hover: #e1a53b;
+  --shadow: rgba(0,0,0,0.15);
+  --success: #2ecc71;
+  --error: #e74c3c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; 
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  display: flex; 
+  flex-direction: column;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+header {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+.header-content {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo {
+  font-size: 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo i {
+  font-size: 28px;
+}
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  background: rgba(255,255,255,0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--success);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+#playerContainer {
+  width: 100%;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
+  margin: 20px auto 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px var(--shadow);
+  background: #000;
+  position: relative;
+}
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 10;
+  display: none;
+}
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.player-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 15px auto;
+  max-width: 960px;
+}
+.control-btn {
+  background: var(--btn-bg);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px var(--shadow);
+}
+.control-btn:hover {
+  background: var(--btn-hover);
+  color: white;
+  transform: translateY(-2px);
+}
+.server-section {
+  max-width: 960px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+.server-btn {
+  background: var(--btn-bg);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-dark);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 4px 8px var(--shadow);
+  min-width: 160px;
+  text-align: left;
+}
+.server-btn:hover { 
+  background-color: var(--btn-hover); 
+  color: #fff; 
+  transform: translateY(-2px);
+}
+.server-btn.active {
+  background-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 6px 14px var(--primary-dark);
+}
+.server-btn .server-quality {
+  font-size: 11px;
+  display: block;
+  margin-top: 4px;
+  opacity: 0.85;
+}
+.server-btn.active::after {
+  content: "✓";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 900;
+  font-size: 18px;
+  color: #fff;
+}
+.info-section {
+  max-width: 960px;
+  margin: 0 auto 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px var(--shadow);
+  padding: 24px;
+  color: var(--text-dark);
+}
+.match-banner {
+  max-width: 240px;
+  display: block;
+  margin: 0 auto 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+.description {
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.meta-info {
+  font-size: 14px;
+  background: #fdf1de;
+  border-left: 5px solid var(--primary);
+  padding: 14px 20px;
+  border-radius: 6px;
+  color: #7a5a12;
+  margin-bottom: 20px;
+}
+.share-section h3 {
+  font-weight: 600;
+  margin-bottom: 12px;
+  text-align: center;
+  color: var(--primary);
+}
+.share-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+.share-buttons a {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  background: var(--btn-bg);
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dark);
+  font-size: 18px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.share-buttons a:hover { 
+  background: var(--primary); 
+  color: #fff; 
+  transform: translateY(-2px);
+}
+.share-buttons a.facebook:hover { background: #3b5998; }
+.share-buttons a.twitter:hover { background: #1da1f2; }
+.share-buttons a.whatsapp:hover { background: #25d366; }
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+  font-size: 14px;
+  margin-top: auto;
+}
+footer a {
+  color: var(--primary);
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .server-btn {
+    min-width: 140px;
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+  .player-controls {
+    flex-wrap: wrap;
+  }
+  .control-btn {
+    padding: 8px 15px;
+    font-size: 13px;
+  }
+  .info-section {
+    padding: 15px;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="logo">
+      <i class="fas fa-tv"></i>
+      <span>Bdcast Web Tv1</span>
+    </div>
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      <span>লাইভ</span>
+    </div>
+  </div>
+</header>
+
+<div id="playerContainer">
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <p>স্ট্রিম লোড হচ্ছে...</p>
+  </div>
+</div>
+
+<div class="player-controls">
+  <button class="control-btn" id="muteBtn">
+    <i class="fas fa-volume-mute"></i>
+    <span>আনমিউট</span>
+  </button>
+  <button class="control-btn" id="fullscreenBtn">
+    <i class="fas fa-expand"></i>
+    <span>ফুলস্ক্রিন</span>
+  </button>
+  <button class="control-btn" id="refreshBtn">
+    <i class="fas fa-redo"></i>
+    <span>রিফ্রেশ</span>
+  </button>
+</div>
+
+<!-- সার্ভার বাটন -->
+<div class="server-section">
+  <button class="server-btn active" data-url="https://d35j504z0x2vu2.cloudfront.net/v1/manifest/0bc8e8376bd8417a1b6761138aa41c26c7309312/9xm/23886666-8fc5-470f-aab1-bd637ed607b1/3.m3u8">
+    B4u Music
+    <span class="server-quality">Server 1</span>
+  </button>
+
+  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/1705-audio_113352_eng=113200-video=442000.m3u8">
+    Ekattor tv
+    <span class="server-quality">Server 2</span>
+  </button>
+
+<button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1701/output/1701-audio_113312_eng=113200-video=442000.m3u8">
+    Jomuna tv
+    <span class="server-quality">Server 2</span>
+  </button>
+
+  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/1715-audio_113452_eng=113200-video=2202800.m3u8">
+    Banglavison tv
+    <span class="server-quality">Server 3</span>
+  </button>
+
+  <button class="server-btn" data-url="https://catchup.yuppcdn.net/amazonv2/36/preview/starjalsha/master/chunklist.m3u8">
+    Star jolsha
+    <span class="server-quality">Server 4</span>
+  </button>
+
+<button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/1703-audio_113332_eng=113200-video=442000.m3u8">
+    Channel 24
+    <span class="server-quality">Server 4</span>
+  </button>
+
+  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/1722-audio_113522_eng=113200-video=2202800.m3u8">
+    Atn Bangla
+    <span class="server-quality">Server 5</span>
+  </button>
+
+  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/1723-audio_113532_eng=113200-video=2202800.m3u8">
+    Channel I
+    <span class="server-quality">Server 6</span>
+  </button>
+</div>
+
+<div class="info-section">
+  <img src="https://i.postimg.cc/8zNtfQGs/20250916-180342.jpg" alt="Match Banner" class="match-banner" />
+  <p class="description">
+    🏏 <strong>আমার বাংলাদেশ</strong> লাইভ স্ট্রিমিং<br>
+    উপরের সার্ভার থেকে পছন্দমতো একটি সিলেক্ট করুন।
+  </p>
+  <p class="meta-info">
+    ⚠️ সমস্যা হলে অন্য সার্ভার চেষ্টা করুন অথবা আমাদের জানান।<br>
+    📌 ভালো কানেকশনের জন্য Wi-Fi ব্যবহার করুন।<br>
+    Telegram Link জয়েন করুন:  
+    <a href="https://t.me/bdix_ebox_live_tv" target="_blank">https://t.me/bdix_ebox_live_tv</a>
+  </p>
+
+  <div class="share-section">
+    <h3><i class="fas fa-share-alt"></i> Share this Stream</h3>
+    <div class="share-buttons">
+      <a href="#" class="facebook" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+      <a href="#" class="twitter" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="whatsapp" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2023 Bdcast1 | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+</footer>
+
+<!-- Clappr Player JS -->
+<script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const playerContainer = document.getElementById('playerContainer');
+  const serverButtons = document.querySelectorAll('.server-btn');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const muteBtn = document.getElementById('muteBtn');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const refreshBtn = document.getElementById('refreshBtn');
+  let player;
+  let isMuted = true;
+
+  function showLoading() {
+    loadingOverlay.style.display = 'flex';
+  }
+
+  function hideLoading() {
+    loadingOverlay.style.display = 'none';
+  }
+
+  function loadStream(url) {
+    if (!url) return;
+    showLoading();
+    
+    if (player) player.destroy();
+    
+    player = new Clappr.Player({
+      source: url,
+      parentId: '#playerContainer',
+      autoPlay: true,
+      height: '100%',
+      width: '100%',
+      mute: isMuted,
+      plugins: [],
+      playback: {
+        playInline: true,
+        preload: 'auto'
+      },
+      events: {
+        onReady: function() {
+          hideLoading();
+          updateMuteButton();
+          console.log('Player is ready');
+        },
+        onError: function(error) {
+          hideLoading();
+          console.error('Player error:', error);
+          alert('স্ট্রিম লোড করতে সমস্যা হচ্ছে। অন্য সার্ভার চেষ্টা করুন।');
+        },
+        onPlay: function() {
+          console.log('Playback started');
+        }
+      }
+    });
+  }
+
+  function updateMuteButton() {
+    if (isMuted) {
+      muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i><span>আনমিউট</span>';
+    } else {
+      muteBtn.innerHTML = '<i class="fas fa-volume-up"></i><span>মিউট</span>';
+    }
+  }
+
+  // বাটন ক্লিক করলে নতুন সার্ভার লোড হবে
+  serverButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('active')) return;
+      serverButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadStream(btn.dataset.url);
+    });
+  });
+
+  // মিউট/আনমিউট বাটন
+  muteBtn.addEventListener('click', () => {
+    if (player) {
+      isMuted = !isMuted;
+      player.mute(isMuted);
+      updateMuteButton();
+    }
+  });
+
+  // ফুলস্ক্রিন বাটন
+  fullscreenBtn.addEventListener('click', () => {
+    if (player) {
+      player.toggleFullscreen();
+    }
+  });
+
+  // রিফ্রেশ বাটন
+  refreshBtn.addEventListener('click', () => {
+    const activeBtn = document.querySelector('.server-btn.active');
+    if (activeBtn) {
+      loadStream(activeBtn.dataset.url);
+    }
+  });
+
+  // শেয়ার বাটন ফাংশনালিটি
+  const shareButtons = document.querySelectorAll('.share-buttons a');
+  const pageUrl = encodeURIComponent(window.location.href);
+  const pageTitle = encodeURIComponent(document.title);
+  
+  shareButtons.forEach(btn => {
+    if (btn.classList.contains('facebook')) {
+      btn.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+    } else if (btn.classList.contains('twitter')) {
+      btn.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+    } else if (btn.classList.contains('whatsapp')) {
+      btn.href = `https://api.whatsapp.com/send?text=${pageTitle} ${pageUrl}`;
+    }
+    
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.open(this.href, 'share', 'width=600,height=400');
+    });
+  });
+
+  // ডিফল্ট সার্ভার (active) অটোপ্লে হবে
+  const activeBtn = document.querySelector('.server-btn.active');
+  if (activeBtn) loadStream(activeBtn.dataset.url);
+});
+</script>
+
+</body>
+</html>
