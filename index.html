@@ -40,6 +40,9 @@ header {
   padding: 15px 20px;
   text-align: center;
   box-shadow: 0 4px 12px var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 .header-content {
   max-width: 960px;
@@ -79,14 +82,24 @@ header {
   50% { opacity: 0.5; }
   100% { opacity: 1; }
 }
+
+/* ভিডিও প্লেয়ার স্টিকি স্টাইল */
+.player-section {
+  position: sticky;
+  top: 80px;
+  z-index: 900;
+  background: #000;
+  box-shadow: 0 8px 20px var(--shadow);
+  width: 100%;
+}
+
 #playerContainer {
   width: 100%;
   max-width: 960px;
   aspect-ratio: 16 / 9;
-  margin: 20px auto 10px;
+  margin: 0 auto;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 20px var(--shadow);
   background: #000;
   position: relative;
 }
@@ -118,11 +131,23 @@ header {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* কন্ট্রোল এবং সার্ভার সেকশন */
+.controls-section {
+  position: sticky;
+  top: calc(80px + (100vw * 9 / 16));
+  z-index: 800;
+  background: white;
+  padding: 15px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
 .player-controls {
   display: flex;
   justify-content: center;
   gap: 15px;
-  margin: 15px auto;
+  margin: 0 auto 15px;
   max-width: 960px;
 }
 .control-btn {
@@ -145,9 +170,10 @@ header {
   color: white;
   transform: translateY(-2px);
 }
+
 .server-section {
   max-width: 960px;
-  margin: 0 auto 20px;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   gap: 14px;
@@ -196,9 +222,10 @@ header {
   font-size: 18px;
   color: #fff;
 }
+
 .info-section {
   max-width: 960px;
-  margin: 0 auto 30px;
+  margin: 30px auto;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 8px 18px var(--shadow);
@@ -296,6 +323,28 @@ footer a:hover {
   .info-section {
     padding: 15px;
   }
+  
+  /* মোবাইলে ভিডিও প্লেয়ার স্টিকি নাও হতে পারে */
+  .player-section {
+    position: relative;
+    top: 0;
+  }
+  .controls-section {
+    position: relative;
+    top: 0;
+  }
+}
+
+/* ছোট স্ক্রিনে স্টিকি ফিচার বন্ধ */
+@media (max-height: 600px) {
+  .player-section {
+    position: relative;
+    top: 0;
+  }
+  .controls-section {
+    position: relative;
+    top: 0;
+  }
 }
 </style>
 </head>
@@ -314,94 +363,144 @@ footer a:hover {
   </div>
 </header>
 
-<div id="playerContainer">
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner"></div>
-    <p>স্ট্রিম লোড হচ্ছে...</p>
+<!-- ভিডিও প্লেয়ার সেকশন -->
+<div class="player-section">
+  <div id="playerContainer">
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner"></div>
+      <p>স্ট্রিম লোড হচ্ছে...</p>
+    </div>
   </div>
 </div>
 
-<div class="player-controls">
-  <button class="control-btn" id="muteBtn">
-    <i class="fas fa-volume-mute"></i>
-    <span>আনমিউট</span>
-  </button>
-  <button class="control-btn" id="fullscreenBtn">
-    <i class="fas fa-expand"></i>
-    <span>ফুলস্ক্রিন</span>
-  </button>
-  <button class="control-btn" id="refreshBtn">
-    <i class="fas fa-redo"></i>
-    <span>রিফ্রেশ</span>
-  </button>
-</div>
+<!-- কন্ট্রোল এবং সার্ভার সেকশন -->
+<div class="controls-section">
+  <div class="player-controls">
+    <button class="control-btn" id="muteBtn">
+      <i class="fas fa-volume-mute"></i>
+      <span>আনমিউট</span>
+    </button>
+    <button class="control-btn" id="fullscreenBtn">
+      <i class="fas fa-expand"></i>
+      <span>ফুলস্ক্রিন</span>
+    </button>
+    <button class="control-btn" id="refreshBtn">
+      <i class="fas fa-redo"></i>
+      <span>রিফ্রেশ</span>
+    </button>
+  </div>
 
-<!-- সার্ভার বাটনস -->
-<div class="server-section">
-  <button class="server-btn active" data-url="https://d3kdywbtdfbp9z.cloudfront.net/v1/manifest/93ce20f0f52760bf38be911ff4c91ed02aa2fd92/dff423e0-3c82-46d6-9ecb-3baa96b5694a/4598c408-0e38-488c-9b64-fc845d1ea2b6/0.m3u8">
-    B4U Music
-    <span class="server-quality">Server 1</span>
-  </button>
+  <!-- সার্ভার বাটনস -->
+  <div class="server-section">
+    <button class="server-btn active" data-url="https://d3kdywbtdfbp9z.cloudfront.net/v1/manifest/93ce20f0f52760bf38be911ff4c91ed02aa2fd92/dff423e0-3c82-46d6-9ecb-3baa96b5694a/4598c408-0e38-488c-9b64-fc845d1ea2b6/0.m3u8">
+      B4U Music
+      <span class="server-quality">Server 1</span>
+    </button>
 
-  <button class="server-btn" data-url="https://d35j504z0x2vu2.cloudfront.net/v1/manifest/0bc8e8376bd8417a1b6761138aa41c26c7309312/9xm/a731c680-6a62-4174-bc98-186fe654724a/0.m3u8">
-    9xm Music
-    <span class="server-quality">Server ❤️</span>
-  </button>
+    <button class="server-btn" data-url="https://d35j504z0x2vu2.cloudfront.net/v1/manifest/0bc8e8376bd8417a1b6761138aa41c26c7309312/9xm/a731c680-6a62-4174-bc98-186fe654724a/0.m3u8">
+      9xm Music
+      <span class="server-quality">Server ❤️</span>
+    </button>
 
-  <button class="server-btn" data-url="https://dmitwlvvll.cdn.mgmlcdn.com/dubaisportshd5/smil:dubaisportshd5.smil/chunklist_b300000.m3u8">
-    Dubai Sports 3
-    <span class="server-quality">Server 2</span>
-  </button>
+    <button class="server-btn" data-url="https://dmitwlvvll.cdn.mgmlcdn.com/dubaisportshd5/smil:dubaisportshd5.smil/chunklist_b300000.m3u8">
+      Dubai Sports 3
+      <span class="server-quality">Server 2</span>
+    </button>
 
-  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/1705-audio_113352_eng=113200-video=442000.m3u8">
-    Ekattor TV
-    <span class="server-quality">Server 3</span>
-  </button>
+    <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1705/output/1705-audio_113352_eng=113200-video=442000.m3u8">
+      Ekattor TV
+      <span class="server-quality">Server 3</span>
+    </button>
 
-  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=442000.m3u8">
-    Somoy TV
-    <span class="server-quality">Server 4</span>
-  </button>
+    <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=442000.m3u8">
+      Somoy TV
+      <span class="server-quality">Server 4</span>
+    </button>
 
-  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/1715-audio_113452_eng=113200-video=2202800.m3u8">
-    Banglavision TV
-    <span class="server-quality">Server 5</span>
-  </button>
+    <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/1715-audio_113452_eng=113200-video=2202800.m3u8">
+      Banglavision TV
+      <span class="server-quality">Server 5</span>
+    </button>
 
-  <button class="server-btn" data-url="https://catchup.yuppcdn.net/amazonv2/36/preview/starjalsha/master/chunklist.m3u8">
-    Star Jalsha
-    <span class="server-quality">Server 6</span>
-  </button>
+    <button class="server-btn" data-url="https://catchup.yuppcdn.net/amazonv2/36/preview/starjalsha/master/chunklist.m3u8">
+      Star Jalsha
+      <span class="server-quality">Server 6</span>
+    </button>
 
-  <button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-    Colors Bangla
-    <span class="server-quality">Server 7</span>
-  </button>
+    <button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
 
-  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/1703-audio_113332_eng=113200-video=442000.m3u8">
-    Channel 24
-    <span class="server-quality">Server 8</span>
-  </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
 
-  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/1722-audio_113522_eng=113200-video=2202800.m3u8">
-    ATN Bangla
-    <span class="server-quality">Server ❤️</span>
-  </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
 
-  <button class="server-btn" data-url="https://cdnb4u.wiseplayout.com/B4U_Movies/HD1080/HD1080.m3u8">
-    B4U Movies
-    <span class="server-quality">Server ❤️</span>
-  </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
 
-  <button class="server-btn" data-url="https://byphdgllyk.gpcdn.net/hls/DeeptoTV/0_1/index.m3u8?sessId=3686839">
-    Deepto TV
-    <span class="server-quality">Server ❤️</span>
-  </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
 
-  <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/1723-audio_113532_eng=113200-video=2202800.m3u8">
-    Channel I
-    <span class="server-quality">Server 9</span>
-  </button>
+<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
+      Colors Bangla
+      <span class="server-quality">Server 7</span>
+    </button>
+
+
+
+
+    <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/1703-audio_113332_eng=113200-video=442000.m3u8">
+      Channel 24
+      <span class="server-quality">Server 8</span>
+    </button>
+
+    <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1722/output/1722-audio_113522_eng=113200-video=2202800.m3u8">
+      ATN Bangla
+      <span class="server-quality">Server ❤️</span>
+    </button>
+
+    <button class="server-btn" data-url="https://cdnb4u.wiseplayout.com/B4U_Movies/HD1080/HD1080.m3u8">
+      B4U Movies
+      <span class="server-quality">Server ❤️</span>
+    </button>
+
+    <button class="server-btn" data-url="https://byphdgllyk.gpcdn.net/hls/DeeptoTV/0_1/index.m3u8?sessId=3686839">
+      Deepto TV
+      <span class="server-quality">Server ❤️</span>
+    </button>
+
+    <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1723/output/1723-audio_113532_eng=113200-video=2202800.m3u8">
+      Channel I
+      <span class="server-quality">Server 9</span>
+    </button>
+  </div>
 </div>
 
 <div class="info-section">
