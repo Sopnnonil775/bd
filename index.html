@@ -1,25 +1,22 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta name="monetag" content="4c6fafcb6dcc2572f06b5f827d5ed768">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Bdcast Web TV 1</title>
 
-<!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
 :root {
-  --primary: #e67e22;
-  --primary-dark: #cf711f;
+  --primary: #ffcc00;  /* হলুদ */
+  --primary-dark: #e6b800; /* গাঢ় হলুদ */
   --bg-light: #fff8e1;
-  --text-dark: #333;
-  --btn-bg: #f5c27a;
-  --btn-hover: #e1a53b;
+  --text-dark: #ff0000; /* কালো থেকে লাল করা হয়েছে */
+  --btn-bg: #ffeb3b; /* হালকা হলুদ */
+  --btn-hover: #fbc02d; /* হলুদ হোভার */
   --shadow: rgba(0,0,0,0.15);
   --success: #2ecc71;
   --error: #e74c3c;
@@ -29,7 +26,7 @@ body {
   margin: 0; 
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-light);
-  color: var(--text-dark);
+  color: var(--text-dark); /* কালো থেকে লাল করা হয়েছে */
   display: flex; 
   flex-direction: column;
   min-height: 100vh;
@@ -96,13 +93,14 @@ header {
 
 #playerContainer {
   width: 100%;
-  max-width: 960px;
+  max-width: 600px; /* <--- পরিবর্তন করা হয়েছে: প্লেয়ার ছোট করতে */
   aspect-ratio: 16 / 9;
   margin: 0 auto;
   border-radius: 10px;
   overflow: hidden;
   background: #000;
   position: relative;
+  transition: max-width 0.3s ease; /* জুমের জন্য ট্রানজিশন যোগ করা হয়েছে */
 }
 .loading-overlay {
   position: absolute;
@@ -136,7 +134,7 @@ header {
 /* কন্ট্রোল এবং সার্ভার সেকশন */
 .controls-section {
   position: sticky;
-  top: calc(80px + (100vw * 9 / 16));
+  top: 80px; /* প্লেয়ারের নিচে না রেখে, প্লেয়ার সেকশনের নিচে স্টিকি করা হয়েছে */
   z-index: 800;
   background: white;
   padding: 15px 0;
@@ -150,6 +148,7 @@ header {
   gap: 15px;
   margin: 0 auto 15px;
   max-width: 960px;
+  flex-wrap: wrap; /* ছোট স্ক্রিনের জন্য */
 }
 .control-btn {
   background: var(--btn-bg);
@@ -158,7 +157,7 @@ header {
   border-radius: 30px;
   font-weight: 600;
   font-size: 14px;
-  color: var(--text-dark);
+  color: var(--text-dark); /* কালো থেকে লাল করা হয়েছে */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -188,7 +187,7 @@ header {
   border-radius: 30px;
   font-weight: 600;
   font-size: 14px;
-  color: var(--text-dark);
+  color: var(--text-dark); /* কালো থেকে লাল করা হয়েছে */
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
@@ -212,6 +211,10 @@ header {
   display: block;
   margin-top: 4px;
   opacity: 0.85;
+  color: var(--text-dark); /* কালো থেকে লাল করা হয়েছে */
+}
+.server-btn.active .server-quality {
+  color: #fff;
 }
 .server-btn.active::after {
   content: "✓";
@@ -231,7 +234,7 @@ header {
   border-radius: 12px;
   box-shadow: 0 8px 18px var(--shadow);
   padding: 24px;
-  color: var(--text-dark);
+  color: var(--text-dark); /* কালো থেকে লাল করা হয়েছে */
 }
 .match-banner {
   max-width: 240px;
@@ -245,6 +248,7 @@ header {
   text-align: center;
   margin-bottom: 16px;
   line-height: 1.5;
+  color: var(--text-dark); /* কালো থেকে লাল করা হয়েছে */
 }
 .meta-info {
   font-size: 14px;
@@ -274,7 +278,7 @@ header {
   border-radius: 50%;
   align-items: center;
   justify-content: center;
-  color: var(--text-dark);
+  color: var(--text-dark); /* কালো থেকে লাল করা হয়েছে */
   font-size: 18px;
   text-decoration: none;
   box-shadow: 0 4px 12px var(--shadow);
@@ -291,7 +295,7 @@ header {
 footer {
   text-align: center;
   padding: 20px;
-  color: #777;
+  color: var(--text-dark); /* কালো থেকে লাল করা হয়েছে */
   font-size: 14px;
   margin-top: auto;
 }
@@ -364,7 +368,6 @@ footer a:hover {
   </div>
 </header>
 
-<!-- ভিডিও প্লেয়ার সেকশন -->
 <div class="player-section">
   <div id="playerContainer">
     <div class="loading-overlay" id="loadingOverlay">
@@ -374,7 +377,6 @@ footer a:hover {
   </div>
 </div>
 
-<!-- কন্ট্রোল এবং সার্ভার সেকশন -->
 <div class="controls-section">
   <div class="player-controls">
     <button class="control-btn" id="muteBtn">
@@ -389,9 +391,16 @@ footer a:hover {
       <i class="fas fa-redo"></i>
       <span>রিফ্রেশ</span>
     </button>
+    <button class="control-btn" id="zoomInBtn">
+      <i class="fas fa-search-plus"></i>
+      <span>জুম ইন</span>
+    </button>
+    <button class="control-btn" id="zoomOutBtn">
+      <i class="fas fa-search-minus"></i>
+      <span>জুম আউট</span>
+    </button>
   </div>
 
-  <!-- সার্ভার বাটনস -->
   <div class="server-section">
     <button class="server-btn active" data-url="https://d3kdywbtdfbp9z.cloudfront.net/v1/manifest/93ce20f0f52760bf38be911ff4c91ed02aa2fd92/dff423e0-3c82-46d6-9ecb-3baa96b5694a/4598c408-0e38-488c-9b64-fc845d1ea2b6/0.m3u8">
       B4U Music
@@ -419,7 +428,37 @@ footer a:hover {
     </button>
 
     <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/1715-audio_113452_eng=113200-video=2202800.m3u8">
-      Banglavision TV
+      2TV
+      <span class="server-quality">Server 5</span>
+    </button>
+
+<button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1715/output/1715-audio_113452_eng=113200-video=2202800.m3u8">
+       1TV
+      <span class="server-quality">Server 5</span>
+    </button>
+
+<button class="server-btn" data-url="http://103.175.242.10:8080/starselect1/index.m3u8">
+      Starselect1
+      <span class="server-quality">Server 5</span>
+    </button>
+
+<button class="server-btn" data-url="http://103.175.242.10:8080/starselect2/index.m3u8">
+      Starselect2
+      <span class="server-quality">Server 5</span>
+    </button>
+
+<button class="server-btn" data-url="http://103.175.242.10:8080/tsports1/index.m3u8">
+      TSports
+      <span class="server-quality">Server 5</span>
+    </button>
+
+<button class="server-btn" data-url="http://103.175.242.10:8080/starsports2/index.m3u8">
+      Starsports2
+      <span class="server-quality">Server 5</span>
+    </button>
+
+<button class="server-btn" data-url="http://103.175.242.10:8080/starsports1/index.m3u8">
+      Starsports1
       <span class="server-quality">Server 5</span>
     </button>
 
@@ -432,50 +471,6 @@ footer a:hover {
       Colors Bangla
       <span class="server-quality">Server 7</span>
     </button>
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-
-<button class="server-btn" data-url="https://tvsen3.aynaott.com/u3LkNQ7UHhFX/tracks-v1a1/mono.ts.m3u8">
-      Colors Bangla
-      <span class="server-quality">Server 7</span>
-    </button>
-
-
-
 
     <button class="server-btn" data-url="https://owrcovcrpy.gpcdn.net/bpk-tv/1703/output/1703-audio_113332_eng=113200-video=442000.m3u8">
       Channel 24
@@ -531,7 +526,6 @@ footer a:hover {
   <p>&copy; 2023 Bdcast1 | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
 </footer>
 
-<!-- Clappr Player JS -->
 <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -541,8 +535,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const muteBtn = document.getElementById('muteBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
   const refreshBtn = document.getElementById('refreshBtn');
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
   let player;
   let isMuted = true;
+
+  // জুমের জন্য ভ্যারিয়েবল
+  const playerContainerStyles = window.getComputedStyle(playerContainer);
+  let currentMaxWidth = parseInt(playerContainerStyles.maxWidth) || 600; 
+  const minMaxWidth = 300; // সর্বনিম্ন 300px
+  const maxMaxWidth = 1200; // সর্বোচ্চ 1200px
+  const zoomStep = 100; // প্রতি ক্লিকে 100px পরিবর্তন
 
   function showLoading() {
     loadingOverlay.style.display = 'flex';
@@ -618,6 +621,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeBtn = document.querySelector('.server-btn.active');
     if (activeBtn) {
       loadStream(activeBtn.dataset.url);
+    }
+  });
+
+  // জুম ফাংশনালিটি
+  function updatePlayerSize() {
+    playerContainer.style.maxWidth = `${currentMaxWidth}px`;
+    if (player) {
+      // Clappr প্লেয়ারকে নতুন সাইজ অ্যাডাপ্ট করতে বাধ্য করা
+      player.resize(); 
+    }
+  }
+  
+  zoomInBtn.addEventListener('click', () => {
+    if (currentMaxWidth < maxMaxWidth) {
+      currentMaxWidth = Math.min(maxMaxWidth, currentMaxWidth + zoomStep);
+      updatePlayerSize();
+    }
+  });
+
+  zoomOutBtn.addEventListener('click', () => {
+    if (currentMaxWidth > minMaxWidth) {
+      currentMaxWidth = Math.max(minMaxWidth, currentMaxWidth - zoomStep);
+      updatePlayerSize();
     }
   });
 
